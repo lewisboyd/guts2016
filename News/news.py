@@ -1,5 +1,5 @@
 from __future__ import print_function
-import urllib2, json, random
+import urllib2, json, random, string
 
 # --------------- Helpers that build all of the responses ----------------------
 
@@ -60,16 +60,17 @@ def get_how_are_you_response():
          
 def get_news(intent, session):
     card_title = "News"
-    if 'name' in intent['slots']:
-        json_obj = urllib2.urlopen('https://newsapi.org/v1/articles?source=' + intent['slots']['Site']['value'] + '&apiKey=ef3e0724395d48ae8fef22341dc76428')
+    try:
+        site = string.replace(intent['slots']['Site']['value'], ' ', '-')
+        json_obj = urllib2.urlopen('https://newsapi.org/v1/articles?source=' + site + '&apiKey=ef3e0724395d48ae8fef22341dc76428')
         data = json.load(json_obj);
         rand = random.randrange(0, len(data['articles']))
         speech_output = data['articles'][rand]['title']
-    else:
-        json_obj = urllib2.urlopen('https://newsapi.org/v1/articles?source=buzzfeed&apiKey=ef3e0724395d48ae8fef22341dc76428')
-        data = json.load(json_obj);
-        rand = random.randrange(0, len(data['articles']))
-        speech_output = 'I do not know the website but here is a random buzzfeed article, ' + data['articles'][rand]['title']
+    except:
+         json_obj = urllib2.urlopen('https://newsapi.org/v1/articles?source=buzzfeed&apiKey=ef3e0724395d48ae8fef22341dc76428')
+         data = json.load(json_obj);
+         rand = random.randrange(0, len(data['articles']))
+         speech_output = 'I do not know the website but here is a random buzzfeed article, ' + data['articles'][rand]['title']
     session_attributes = {'title': data['articles'][rand]['title']}
     session_attributes = {'description': data['articles'][rand]['description']}
     session_attributes = {'more': data['articles'][rand]['description']}
