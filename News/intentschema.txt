@@ -4,7 +4,13 @@
       "intent": "HowAreYou"
     },
     {
-      "intent": "News"
+      "intent": "News",
+      "slots": [
+        {
+          "name": "Site",
+          "type": "WEBSITE_LIST"
+        }
+      ]
     },
     {
       "intent": "TellMeMore"
