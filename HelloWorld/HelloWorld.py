@@ -104,31 +104,53 @@ def handle_love_A_intent(session):
     if not(session['attributes'].has_key('convoState')) or session['attributes']['convoState'] == 1:
         session_attributes = {'convoState' : 2}
         return build_response(session_attributes, build_speechlet_response(
-        "LoveACard", "I love Theo!", "I love Theo so much!", False))
+        "LoveACard", "I love you!", "I love you so much!", False))
     else:
-        session_attributes = {'convoState' : 1}
-        return build_response(session_attributes, build_speechlet_response(
-        "ConfusionACard", "I wasn't expecting that", "Try again with something romantic", False))
+        #session_attributes = {'convoState' : 1}
+        return handle_incorrect_state(session)
+        #return build_response(session_attributes, build_speechlet_response(
+        #"ConfusionACard", "I wasn't expecting that", "Try again with something romantic", False))
+
 
 def handle_love_B_intent(session):
     if session['attributes']['convoState'] == 2:
         session_attributes = {'convoState' : 3}
         return build_response(session_attributes, build_speechlet_response(
-        "LoveBCard", "Your so cute", "That was very nice", False))
+        "LoveBCard", "Your so sweet", "That was very nice", False))
     else:
-        session_attributes = session['attributes']
-        return build_response(session_attributes, build_speechlet_response(
-        "ConfusionBCard", "Maybe say how cute that was", "Try again with something romantic", False))
+        return handle_incorrect_state(session)
+        #session_attributes = session['attributes']
+        #return build_response(session_attributes, build_speechlet_response(
+        #"ConfusionBCard", "Maybe say how cute that was", "Try again with something romantic", False))
+
 
 def handle_love_C_intent(session):
     if session['attributes']['convoState'] == 3:
         session_attributes = {}
         return build_response(session_attributes, build_speechlet_response(
-        "LoveCCard", "Yeah, lets stop", "Lets never do this again", True))
+        "LoveCCard", "I agree, lets stop", "Lets never do this again", True))
     else:
-        session_attributes = session['attributes']
-        return build_response(session_attributes, build_speechlet_response(
-        "ConfusionCCard", "Actually, this is kinda embarassing", "This is just dumb, don't you think?", False))
+        #session_attributes = session['attributes']
+        return handle_incorrect_state(session)
+        #return build_response(session_attributes, build_speechlet_response(
+        #"ConfusionCCard", "Actually, this is kinda embarrassing", "This is just dumb, don't you think?", False))
+
+
+def handle_incorrect_state(session):
+    if session['attributes']['convoState'] == 1:
+        session_attributes = {'convoState' : 1}
+        return build_response(session_attributes, build_speechlet_response("ConfusionACard", "I wasn't expecting that",
+                                                                           "Try again with something romantic", False))
+
+    elif session['attributes']['convoState'] == 2:
+        session_attributes = {'convoState' : 2}
+        return build_response(session_attributes, build_speechlet_response("ConfusionBCard", "Maybe say how cute that "
+                                                                     "was", "Try again with something romantic", False))
+
+    elif session['attributes']['convoState'] == 3:
+        session_attributes = {'convoState' : 3}
+        return build_response(session_attributes, build_speechlet_response("ConfusionCCard", "Actually, this is kinda"
+                                                        " embarassing", "This is just dumb, don't you think?", False))
 
 def lambda_handler(event, context):
     """ Route the incoming request based on type (LaunchRequest, IntentRequest,
