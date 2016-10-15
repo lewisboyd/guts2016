@@ -1,0 +1,3 @@
+GUTSIntent Do you have the guts
+LoveIntent I love you
+AMAZON.HelpIntent Please help
