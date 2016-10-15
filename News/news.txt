@@ -1,0 +1,38 @@
+import urllib2, json, random
+
+def get_how_are_you_response():
+    session_attributes = {}
+    card_title = "How am I"
+    speech_output = "I am a robot"
+    should_end_session = False
+    return build_response(session_attributes, build_speechlet_response(
+         card_title, speech_output, None, should_end_session))
+         
+def get_news():
+    card_title = "News"
+    json_obj = urllib2.urlopen('https://newsapi.org/v1/articles?source=bbcnews&apiKey=ef3e0724395d48ae8fef22341dc76428')
+    data = json.load(json_obj);
+    rand = random.randrange(0, len(data['articles']))
+    speech_output = data['articles'][rand]['title']
+    session_attributes = {'more': data['articles'][rand]['description']}
+    should_end_session = False
+    return build_response(session_attributes, build_speechlet_response(
+         card_title, speech_output, None, should_end_session))
+         
+def tell_me_more(session):
+    card_title = "More"
+    speech_output = "Ask me for some news first with: tell me the news"
+    if 'more' in session['attributes']:
+        speech_output = session['attributes']['more']
+        session['attributes'].pop(session['attributes']['more'], None)
+    session_attributes = {}
+    should_end_session = False
+    return build_response(session_attributes, build_speechlet_response(
+         card_title, speech_output, None, should_end_session))
+		 
+if intent_name == "News":
+        return get_news()
+    elif intent_name == "TellMeMore":
+        return tell_me_more(session)
+    elif intent_name == "HowAreYou":
+        return get_how_are_you_response()
