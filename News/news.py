@@ -70,6 +70,8 @@ def get_news(intent, session):
         data = json.load(json_obj);
         rand = random.randrange(0, len(data['articles']))
         speech_output = 'I do not know the website but here is a random buzzfeed article, ' + data['articles'][rand]['title']
+    session_attributes = {'title': data['articles'][rand]['title']}
+    session_attributes = {'description': data['articles'][rand]['description']}
     session_attributes = {'more': data['articles'][rand]['description']}
     should_end_session = False
     return build_response(session_attributes, build_speechlet_response(
@@ -77,7 +79,7 @@ def get_news(intent, session):
          
 def tell_me_more(session):
     card_title = "More"
-    speech_output = "Ask me for some news first with: tell me the news"
+    speech_output = "Ask me for some news first with: tell me the news from website"
     if 'more' in session['attributes']:
         speech_output = session['attributes']['more']
         session['attributes'].pop(session['attributes']['more'], None)
