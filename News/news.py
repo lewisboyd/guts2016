@@ -82,6 +82,9 @@ def on_intent(intent_request, session):
 
     if intent_name == "HowAreYouIntent":
         return handle_how_are_you_intent(session)
+        
+    if intent_name == "EntitySelect":
+        return handle_entity_select_intent(session, intent)
 
     if intent_name == "NewsIntent":
         return handle_news_intent(session, intent)
@@ -131,18 +134,42 @@ def lambda_handler(event, context):
 
 
 def handle_how_are_you_intent(session):
-    session_attributes = {}
+    session_attributes = session['attributes']
     card_title = "How Am I Card"
     speech_output = "I am a robot"
     should_end_session = False
     return build_response(session_attributes, build_speechlet_response(
          card_title, speech_output, None, should_end_session))
+         
+def handle_entity_select_intent(session, intent):
+    session_attributes = session['attributes']
+    indexs = {'1': 0, '2': 1, '3': 2, '4': 3, '5': 4}
+    card_title = "Entity select"
+    reprompt_speech = None
+    try:
+        index = indexs[intent['slots']['Index']['value']]
+        if 'entities' in session['attributes']:
+            if index < len(session['attributes']['entities']):
+                session_attributes['entity'] = session['attributes']['entities'][index]
+                speech_output = "You have selected " + session_attributes['entity']
+            else:
+                speech_output = "Please select a valid number"
+        else:
+            speech_output = "There are no entities"
+    except:
+        speech_output = "Please select a valid number"
+    should_end_session = False
+    return build_response(session_attributes, build_speechlet_response(
+         card_title, speech_output, reprompt_speech, should_end_session))
 
 
 def handle_news_intent(session, intent):
     site = string.replace(intent['slots']['Site']['value'], ' ', '-')
     card_title = "News Card"
     speech_output, session_attributes = get_news(site, session)
+    for entity in session_attributes['entities']:
+        speech_output += ", " 
+        speech_output += entity
     should_end_session = False
     return build_response(session_attributes, build_speechlet_response(
          card_title, speech_output, None, should_end_session))
@@ -151,9 +178,8 @@ def handle_news_intent(session, intent):
 def handle_tell_me_more_intent(session):
     session_attributes = session['attributes']
 
-    if 'more' in session['attributes']:
-        speech_output = session['attributes']['more']
-        #del (session['attributes'])['more']
+    if 'description' in session['attributes']:
+        speech_output = session['attributes']['description']
     else:
         speech_output = "Tell you about what? Try asking for a news article first."
     card_title = "Tell Me More Card"
@@ -197,8 +223,7 @@ def get_news(site, session):
     entities = get_entities(data['articles'][rand]['title'])
     session_attributes = {'title': data['articles'][rand]['title'],
                           'description': data['articles'][rand]['description'],
-                          'entities': entities,
-                          'more': data['articles'][rand]['description']}
+                          'entities': entities,}
     return response, session_attributes
 
 def get_entities(text):
