@@ -1,5 +1,5 @@
 from __future__ import print_function
-import urllib2, json, random, string
+import urllib, urllib2, json, random, string
 
 import urllib2,json
 
@@ -108,6 +108,12 @@ def on_intent(intent_request, session):
 
     if intent_name == "EntityListIntent":
         return handle_entity_list_intent(session)
+
+    if intent_name == "EntitySearch":
+        return handle_entity_search_intent(session)
+
+    if intent_name == "GoodNewsIntent":
+        return handle_good_news_intent(session)
 
 
 # Called when the user ends the session but not when should_end_session=true
@@ -263,6 +269,31 @@ def handle_entity_list_intent(session):
          card_title, speech_output, None, should_end_session))
 
 
+def handle_entity_search_intent(session):
+    card_title = "Search"
+    if 'entity' in session['attributes']:
+        data = bing_search(session['attributes']['entity'])
+        speech_output = data[0]['Description']
+    else:
+        speech_output = "Please ask for an article and select an entity first"
+    should_end_session = False
+    session_attributes = session['attributes']
+    return build_response(session_attributes, build_speechlet_response(
+         card_title, speech_output, None, should_end_session))
+
+
+def handle_good_news_intent(session):
+
+    speech_output, session_attributes = get_rand_news()
+    while get_sentiment(session_attributes['title'],session_attributes['more']) == u'neg':
+        speech_output, session_attributes = get_rand_news()
+
+    should_end_session = False
+    card_title = "Good News"
+    return build_response(session_attributes, build_speechlet_response(
+        card_title, speech_output, None, should_end_session))
+
+
 # This handles when the program in the state wrong for the specified intent
 def handle_incorrect_state(session):
     return True
@@ -329,3 +360,45 @@ def format(text):
         else:
             break;
     return result
+
+def bing_search(query):
+    #search_type: Web, Image, News, Video
+    key= 'zZIMlWEMF95BxiauHkmg4Q6y/80Y9csYC3YQltKre18'
+    query = query.replace(" ", "+")
+    query = urllib.quote(query)
+    # create credential for authentication
+    user_agent = 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Trident/4.0; FDM; .NET CLR 2.0.50727; InfoPath.2; .NET CLR 1.1.4322)'
+    credentials = (':%s' % key).encode('base64')[:-1]
+    auth = 'Basic %s' % credentials
+    url = 'https://api.datamarket.azure.com/Data.ashx/Bing/Search/Web?Query=%27'+query+'%27&$top=5&$format=json'
+    request = urllib2.Request(url)
+    request.add_header('Authorization', auth)
+    request.add_header('User-Agent', user_agent)
+    request_opener = urllib2.build_opener()
+    response = request_opener.open(request)
+    response_data = response.read()
+    json_result = json.loads(response_data)
+    result_list = json_result['d']['results']
+    return result_list
+
+
+def get_rand_news():
+    card_title = "Rand News"
+
+    json_obj = urllib2.urlopen('https://newsapi.org/v1/sources?sortBy=popular&apiKey=ef3e0724395d48ae8fef22341dc76428')
+    data = json.load(json_obj)
+    rand = random.randrange(0,len(data['sources']))
+    source = data['sources'][rand]['name'].lower().replace(' ','-').replace('(','').replace(')','')
+    print(source)
+    json_obj = urllib2.urlopen("https://newsapi.org/v1/articles?source="+source+"&apiKey=ef3e0724395d48ae8fef22341dc76428")
+    articles = json.load(json_obj)
+    rand = random.randrange(0,len(articles['articles']))
+    entities = get_entities(data['articles'][rand]['title'])
+    formEntities = []
+    for item in entities:
+        formEntities.append(format(item))
+    response = "Here is some good news :) "+ articles['articles'][rand]['title']
+    session_attributes = {'title': articles['articles'][rand]['title'],
+                            'more': articles['articles'][rand]['description'],
+                            'entities': formEntities}
+    return response, session_attributes

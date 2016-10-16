@@ -25,10 +25,19 @@
       "intent": "TellMeMoreIntent"
     },
     {
+      "intent": "EntityListIntent"
+    },
+    {
       "intent": "AnoArtSiteIntent"
     },
     {
       "intent": "AMAZON.HelpIntent"
+    },
+    {
+      "intent": "EntitySearch"
+    },
+    {
+      "intent": "GoodNewsIntent"
     }
   ]
 }

@@ -1,12 +1,12 @@
-HowreYouIntent how are you
-HowreYouIntent how are you doing
-HowreYouIntent how are you today
-HowreYouIntent whats up
-HowreYouIntent how are you Alexa
-HowreYouIntent Alexa how are you
-HowreYouIntent how is Alexa
-HowreYouIntent how is Alexa doing
-HowreYouIntent how are you doing princess
+HowAreYouIntent how are you
+HowAreYouIntent how are you doing
+HowAreYouIntent how are you today
+HowAreYouIntent whats up
+HowAreYouIntent how are you Alexa
+HowAreYouIntent Alexa how are you
+HowAreYouIntent how is Alexa
+HowAreYouIntent how is Alexa doing
+HowAreYouIntent how are you doing princess
 
 NewsIntent tell me the news from {Site}
 NewsIntent tell me news from {Site}
@@ -30,6 +30,7 @@ NewsIntent what is on {Site} today
 TellMeMoreIntent tell me more
 TellMeMoreIntent tell me about it
 TellMeMoreIntent tell me more about it
+TellMeMoreIntent can you tell me more
 TellMeMoreIntent say more
 TellMeMoreIntent say more about it
 TellMeMoreIntent please tell me more
@@ -39,13 +40,14 @@ TellMeMoreIntent please say more
 TellMeMoreIntent please say more about it
 TellMeMoreIntent what about it
 TellMeMoreIntent more about this article
-TellMeMoreIntent can i get more 
+TellMeMoreIntent can i get more
 TellMeMoreIntent can i get more please
 TellMeMoreIntent can i get more information
 TellMeMoreIntent more information
 TellMeMoreIntent more info
 TellMeMoreIntent tell me more information
 TellMeMoreIntent tell me more information about it
+TellMeMoreIntent keep going
 
 
 AnoArtSiteIntent can i have another article from this website
@@ -65,11 +67,39 @@ AnoArtSiteIntent another article
 AnoArtSiteIntent another please
 AnoArtSiteIntent another one
 AnoArtSiteIntent another one please
+AnoArtSiteIntent more news
+AnoArtSiteIntent more news please
+AnoArtSiteIntent more news from this site
+AnoArtSiteIntent more news from here
 
 EntitySelect {Index}
-EntitySelect {Index} please 
+EntitySelect {Index} please
 EntitySelect tell me more about {Index}
-EntitySelect choose {Index} 
+EntitySelect choose {Index}
 EntitySelect tell me about {Index}
 EntitySelect tell me {Index}
 EntitySelect tell {Index}
+
+EntityListIntent what can I ask about
+EntityListIntent list the entities
+EntityListIntent what can I ask
+EntityListIntent list what I can ask
+EntityListIntent what are the entities
+
+EntitySearch search this entity
+EntitySearch search for this
+EntitySearch find out more about this entity
+EntitySearch what is this
+EntitySearch what is it
+EntitySearch can I have more about this
+EntitySearch can I have more about it
+EntitySearch what you say about this
+
+GoodNewsIntent can I have some good news
+GoodNewsIntent I want some good news
+GoodNewsIntent can I have some happy news
+GoodNewsIntent can I have some new that isn't sad news
+GoodNewsIntent good news please
+GoodNewsIntent get some good news
+GoodNewsIntent what is some good news
+GoodNewsIntent i'd like good news
