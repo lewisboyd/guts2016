@@ -1,3 +1,6 @@
+from __future__ import print_function
+import urllib2, json, random, string
+
 __author__ = 'Team 9'
 
 # Builders for the responses that Alexa says
@@ -68,8 +71,8 @@ TellMeMoreIntent - tell me more
 AnoArtSiteIntent - can i have another article from this website
 """
 
+# Called when the user specifies an intent for this skill
 def on_intent(intent_request, session):
-    """ Called when the user specifies an intent for this skill """
 
     print("on_intent requestId=" + intent_request['requestId'] +
           ", sessionId=" + session['sessionId'])
@@ -78,12 +81,10 @@ def on_intent(intent_request, session):
     intent_name = intent_request['intent']['name']
 
     if intent_name == "HowAreYouIntent":
-        session_attributes = {}
-        return build_response(session_attributes, build_speechlet_response(
-        "HowAreYouCard", "I am a robot", "", False))
+        return handle_how_are_you_intent(session)
 
     if intent_name == "NewsIntent":
-        return handle_news_intent(session)
+        return handle_news_intent(session, intent)
 
     if intent_name == "TellMeMoreIntent":
         return handle_tell_me_more_intent(session)
@@ -128,16 +129,63 @@ def lambda_handler(event, context):
 
 #----------------------------Logic for Intents----------------------------
 
-def handle_news_intent(session):
-    return True
+
+def handle_how_are_you_intent(session):
+    session_attributes = {}
+    card_title = "How Am I Card"
+    speech_output = "I am a robot"
+    should_end_session = False
+    return build_response(session_attributes, build_speechlet_response(
+         card_title, speech_output, None, should_end_session))
+
+
+def handle_news_intent(session, intent):
+    site = string.replace(intent['slots']['Site']['value'], ' ', '-')
+    session_attributes = {}
+    card_title = "News Card"
+    speech_output = get_news(site)
+    should_end_session = False
+    return build_response(session_attributes, build_speechlet_response(
+         card_title, speech_output, None, should_end_session))
+
 
 def handle_tell_me_more_intent(session):
-    return True
+    session_attributes = {}
+    card_title = "Tell Me More Card"
+    speech_output = "this is telling you more"
+    should_end_session = False
+    return build_response(session_attributes, build_speechlet_response(
+         card_title, speech_output, None, should_end_session))
+
 
 def handle_another_article_site_intent(session):
-    return True
+    session_attributes = {}
+    card_title = "Another Article Site Card"
+    speech_output = "this is another article from the same site"
+    should_end_session = False
+    return build_response(session_attributes, build_speechlet_response(
+         card_title, speech_output, None, should_end_session))
 
 
-# This handles when the program in the wrong for the given intent
+# This handles when the program in the state wrong for the specified intent
 def handle_incorrect_state(session):
     return True
+
+
+# Interacts with News API to get a random article of the specified website
+# If the specified website does cannot be accessed, then a random Buzzfeed article is found
+def get_news(site):
+    card_title = "News"
+    try:
+        json_obj = urllib2.urlopen('https://newsapi.org/v1/articles?source=' + site + '&apiKey=ef3e0724395d48ae8fef22341dc76428')
+        data = json.load(json_obj);
+        rand = random.randrange(0, len(data['articles']))
+        return data['articles'][rand]['title']
+    except:
+         json_obj = urllib2.urlopen('https://newsapi.org/v1/articles?source=buzzfeed&apiKey=ef3e0724395d48ae8fef22341dc76428')
+         data = json.load(json_obj);
+         rand = random.randrange(0, len(data['articles']))
+         session_attributes = {'title': data['articles'][rand]['title'],
+                          'description': data['articles'][rand]['description'],
+                          'more': data['articles'][rand]['description']}
+         return 'I do not know the website but here is a random buzzfeed article, ' + data['articles'][rand]['title']
