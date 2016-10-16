@@ -1,4 +1,67 @@
 HowreYouIntent how are you
+HowreYouIntent how are you doing
+HowreYouIntent how are you today
+HowreYouIntent whats up
+HowreYouIntent how are you Alexa
+HowreYouIntent Alexa how are you
+HowreYouIntent how is Alexa
+HowreYouIntent how is Alexa doing
+HowreYouIntent how are you doing princess
+
 NewsIntent tell me the news from {Site}
+NewsIntent tell me news from {Site}
+NewsIntent tell me {Site} news
+NewsIntent tell news {Site}
+NewsIntent tell {Site} news
+NewsIntent Alexa tell me news from {Site}
+NewsIntent say the news from {Site}
+NewsIntent what is new on {Site}
+NewsIntent what news are there on {Site}
+NewsIntent whats new on {Site}
+NewsIntent news on {Site}
+NewsIntent update me on {Site}
+NewsIntent top article on {Site}
+NewsIntent tell me the top article on {Site}
+NewsIntent what is trending on {Site}
+NewsIntent what is on {Site}
+NewsIntent what is on {Site} today
+
+
 TellMeMoreIntent tell me more
+TellMeMoreIntent tell me about it
+TellMeMoreIntent tell me more about it
+TellMeMoreIntent say more
+TellMeMoreIntent say more about it
+TellMeMoreIntent please tell me more
+TellMeMoreIntent please tell me more about it
+TellMeMoreIntent please tell me about it
+TellMeMoreIntent please say more
+TellMeMoreIntent please say more about it
+TellMeMoreIntent what about it
+TellMeMoreIntent more about this article
+TellMeMoreIntent can i get more 
+TellMeMoreIntent can i get more please
+TellMeMoreIntent can i get more information
+TellMeMoreIntent more information
+TellMeMoreIntent more info
+TellMeMoreIntent tell me more information
+TellMeMoreIntent tell me more information about it
+
+
 AnoArtSiteIntent can i have another article from this website
+AnoArtSiteIntent can i have another article from this site
+AnoArtSiteIntent can i have another
+AnoArtSiteIntent can i have another one
+AnoArtSiteIntent can i have another article
+AnoArtSiteIntent may i have another
+AnoArtSiteIntent may i have another one
+AnoArtSiteIntent may i have another article
+AnoArtSiteIntent tell me another article from this website
+AnoArtSiteIntent tell me another article
+AnoArtSiteIntent say another one
+AnoArtSiteIntent say another article
+AnoArtSiteIntent another
+AnoArtSiteIntent another article
+AnoArtSiteIntent another please
+AnoArtSiteIntent another one
+AnoArtSiteIntent another one please
