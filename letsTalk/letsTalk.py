@@ -141,18 +141,22 @@ def handle_how_are_you_intent(session):
 
 def handle_news_intent(session, intent):
     site = string.replace(intent['slots']['Site']['value'], ' ', '-')
-    session_attributes = {}
     card_title = "News Card"
-    speech_output = get_news(site)
+    speech_output, session_attributes = get_news(site)
     should_end_session = False
     return build_response(session_attributes, build_speechlet_response(
          card_title, speech_output, None, should_end_session))
 
 
 def handle_tell_me_more_intent(session):
-    session_attributes = {}
+    session_attributes = session['attributes']
+
+    if 'more' in session['attributes']:
+        speech_output = session['attributes']['more']
+        #del (session['attributes'])['more']
+    else:
+        speech_output = "Tell you about what? Try asking for a news article first."
     card_title = "Tell Me More Card"
-    speech_output = "this is telling you more"
     should_end_session = False
     return build_response(session_attributes, build_speechlet_response(
          card_title, speech_output, None, should_end_session))
@@ -180,12 +184,15 @@ def get_news(site):
         json_obj = urllib2.urlopen('https://newsapi.org/v1/articles?source=' + site + '&apiKey=ef3e0724395d48ae8fef22341dc76428')
         data = json.load(json_obj);
         rand = random.randrange(0, len(data['articles']))
-        return data['articles'][rand]['title']
+        response = data['articles'][rand]['title']
+
     except:
-         json_obj = urllib2.urlopen('https://newsapi.org/v1/articles?source=buzzfeed&apiKey=ef3e0724395d48ae8fef22341dc76428')
-         data = json.load(json_obj);
-         rand = random.randrange(0, len(data['articles']))
-         session_attributes = {'title': data['articles'][rand]['title'],
+        json_obj = urllib2.urlopen('https://newsapi.org/v1/articles?source=buzzfeed&apiKey=ef3e0724395d48ae8fef22341dc76428')
+        data = json.load(json_obj);
+        rand = random.randrange(0, len(data['articles']))
+        response = 'I do not know the website but here is a random buzzfeed article, ' + data['articles'][rand]['title']
+
+    session_attributes = {'title': data['articles'][rand]['title'],
                           'description': data['articles'][rand]['description'],
                           'more': data['articles'][rand]['description']}
-         return 'I do not know the website but here is a random buzzfeed article, ' + data['articles'][rand]['title']
+    return response, session_attributes
