@@ -182,9 +182,9 @@ def handle_news_intent(session, intent):
     card_title = "News Card"
     speech_output, session_attributes = get_news(site, session)
     if session_attributes['entities'] != []:
-		i = 1
-		speech_output += ". Say "
-		for entity in session_attributes['entities']:
+        i = 1
+        speech_output += ". Say "
+        for entity in session_attributes['entities']:
 			speech_output += str(i) + " for " + entity + ","
 			i += 1
     should_end_session = False

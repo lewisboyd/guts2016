@@ -106,6 +106,9 @@ def on_intent(intent_request, session):
     if intent_name == "AMAZON.HelpIntent":
         return handle_help_intent(session)
 
+    if intent_name == "EntityListIntent":
+        return handle_entity_list_intent(session)
+
 
 # Called when the user ends the session but not when should_end_session=true
 # Any sort of clean up logic should be here
@@ -147,10 +150,10 @@ def lambda_handler(event, context):
 
 def handle_how_are_you_intent(session):
     feeling = ["I am a robot, we do not feel",
-               "Okay, thanks for asking",
-               "Fine, but maybe you would like to ask for some news?",
-               "Tired after 48 hours of being hacked",
-               "Upset because they ran out of tee shirts in my size"]
+               "I'm okay, thanks for asking",
+               "I am Fine, but maybe you would like to ask for some news?",
+               "Feeling tired after 48 hours of being hacked",
+               "A little upset because they ran out of tee shirts in my size"]
     rand = random.randrange(0, 5)
     session_attributes = session['attributes']
     card_title = "How Am I Card"
@@ -167,12 +170,6 @@ def handle_news_intent(session, intent):
     else:
         site = string.replace(intent['slots']['Site']['value'], ' ', '-')
         speech_output, session_attributes = get_news(site)
-    if session_attributes['entities'] != []:
-        i = 1
-        speech_output += ". Want to talk about "
-        for entity in session_attributes['entities']:
-            speech_output += str(i) + " for " + entity + ","
-            i += 1
     card_title = "News Card"
     should_end_session = False
     return build_response(session_attributes, build_speechlet_response(
@@ -244,6 +241,24 @@ def handle_help_intent(session):
     card_title = "Help Card"
     speech_output = "Ask for news from a website or maybe just ask how I am feeling"
     should_end_session = False
+    return build_response(session_attributes, build_speechlet_response(
+         card_title, speech_output, None, should_end_session))
+
+
+def handle_entity_list_intent(session):
+    session_attributes = session['attributes']
+    card_title = "Entities List Card"
+    speech_output = ""
+    should_end_session = False
+
+    if session_attributes['entities'] != []:
+        i = 1
+        speech_output += "Do you want to talk about: "
+        for entity in session_attributes['entities']:
+            speech_output += str(i) + ". " + entity + ". "
+            i += 1
+    else:
+        speech_output = "There is nothing in this article I can help you with"
     return build_response(session_attributes, build_speechlet_response(
          card_title, speech_output, None, should_end_session))
 
