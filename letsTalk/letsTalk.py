@@ -351,7 +351,7 @@ def get_sentiment(title,description):
     print(result)
     return result
 
-
+# Removes brackets and exclaimation marks from the given string
 def format(text):
     result = ""
     for char in text:
@@ -361,6 +361,8 @@ def format(text):
             break;
     return result
 
+
+# Returns results of Bing search for the given query
 def bing_search(query):
     #search_type: Web, Image, News, Video
     key= 'zZIMlWEMF95BxiauHkmg4Q6y/80Y9csYC3YQltKre18'
@@ -382,6 +384,7 @@ def bing_search(query):
     return result_list
 
 
+# Gets a random news article instead of specifying the website
 def get_rand_news():
     card_title = "Rand News"
 
