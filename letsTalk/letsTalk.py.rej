@@ -1,0 +1,9 @@
+diff a/letsTalk/letsTalk.py b/letsTalk/letsTalk.py	(rejected hunks)
+@@ -140,7 +140,6 @@
+ 
+ 
+ def handle_news_intent(session, intent):
+-    site = string.replace(intent['slots']['Site']['value'], ' ', '-')
+     if not('value' in intent['slots']['Site']):
+         speech_output = "Please specify a news website"
+         session_attributes = {}
