@@ -65,3 +65,11 @@ AnoArtSiteIntent another article
 AnoArtSiteIntent another please
 AnoArtSiteIntent another one
 AnoArtSiteIntent another one please
+
+EntitySelect {Index}
+EntitySelect {Index} please 
+EntitySelect tell me more about {Index}
+EntitySelect choose {Index} 
+EntitySelect tell me about {Index}
+EntitySelect tell me {Index}
+EntitySelect tell {Index}

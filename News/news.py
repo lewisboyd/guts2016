@@ -167,9 +167,12 @@ def handle_news_intent(session, intent):
     site = string.replace(intent['slots']['Site']['value'], ' ', '-')
     card_title = "News Card"
     speech_output, session_attributes = get_news(site, session)
-    for entity in session_attributes['entities']:
-        speech_output += ", " 
-        speech_output += entity
+    if session_attributes['entities'] != []:
+		i = 1
+		speech_output += ". Say "
+		for entity in session_attributes['entities']:
+			speech_output += str(i) + " for " + entity + ","
+			i += 1
     should_end_session = False
     return build_response(session_attributes, build_speechlet_response(
          card_title, speech_output, None, should_end_session))
@@ -221,9 +224,12 @@ def get_news(site, session):
         response = 'I do not know the website but here is a random buzzfeed article, ' + data['articles'][rand]['title']
     
     entities = get_entities(data['articles'][rand]['title'])
+    formEntities = []
+    for item in entities:
+        formEntities.append(format(item))
     session_attributes = {'title': data['articles'][rand]['title'],
                           'description': data['articles'][rand]['description'],
-                          'entities': entities,}
+                          'entities': formEntities,}
     return response, session_attributes
 
 def get_entities(text):
@@ -234,3 +240,12 @@ def get_entities(text):
     for item in data['annotations']:
         entites.append(item['title'])
     return entites
+
+def format(text):
+    result = ""
+    for char in text:
+        if char != '(' and char != '!':
+            result += char
+        else:
+            break;
+    return result

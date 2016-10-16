@@ -4,6 +4,15 @@
       "intent": "HowAreYouIntent"
     },
     {
+      "intent": "EntitySelect",
+      "slots": [
+        {
+          "name": "Index",
+          "type": "INDEX"
+        }
+      ]
+    },
+    {
       "intent": "NewsIntent",
       "slots": [
         {
