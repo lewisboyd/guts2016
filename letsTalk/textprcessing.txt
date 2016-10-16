@@ -1,0 +1,16 @@
+import urllib2,json
+
+from pprint import pprint
+
+def text_processer(title,description):
+
+    s = title+" "+description
+    
+    url = "http://text-processing.com/api/sentiment/"
+    r = urllib2.Request(url, data="text="+s)
+    f = urllib2.urlopen(r)    
+    data = json.load(f)
+    result = data[u'label']
+    print result
+
+    return 

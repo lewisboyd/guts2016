@@ -1,7 +1,12 @@
 from __future__ import print_function
 import urllib2, json, random, string
 
+import urllib2,json
+
+from pprint import pprint
+
 __author__ = 'Team 9'
+
 
 # Builders for the responses that Alexa says
 def build_speechlet_response(title, output, reprompt_text, should_end_session):
@@ -50,12 +55,14 @@ def get_welcome_response():
     return build_response(session_attributes, build_speechlet_response(
         card_title, speech_output, reprompt_text, should_end_session))
 
+
 def on_session_started(session_started_request, session):
     print("on_session_started requestId=" + session_started_request['requestId']
           + ", sessionId=" + session['sessionId'])
 
     session['attributes']['convoState'] = 0
     get_welcome_response()
+
 
 #Called when the user launches the skill without specifying what they want
 def on_launch(launch_request, session):
@@ -70,6 +77,7 @@ NewsIntent - tell me the news from {Site}
 TellMeMoreIntent - tell me more
 AnoArtSiteIntent - can i have another article from this website
 """
+
 
 # Called when the user specifies an intent for this skill
 def on_intent(intent_request, session):
@@ -91,6 +99,13 @@ def on_intent(intent_request, session):
 
     if intent_name == "AnoArtSiteIntent":
         return handle_another_article_site_intent(session)
+
+    if intent_name == "EntitySelect":
+        return handle_entity_select_intent(session, intent)
+
+    if intent_name == "AMAZON.HelpIntent":
+        return handle_help_intent(session)
+
 
 # Called when the user ends the session but not when should_end_session=true
 # Any sort of clean up logic should be here
@@ -131,9 +146,15 @@ def lambda_handler(event, context):
 
 
 def handle_how_are_you_intent(session):
-    session_attributes = {}
+    feeling = ["I am a robot, we do not feel",
+               "Okay, thanks for asking",
+               "Fine, but maybe you would like to ask for some news?",
+               "Tired after 48 hours of being hacked",
+               "Upset because they ran out of tee shirts in my size"]
+    rand = random.randrange(0, 5)
+    session_attributes = session['attributes']
     card_title = "How Am I Card"
-    speech_output = "I am a robot"
+    speech_output = feeling[rand]
     should_end_session = False
     return build_response(session_attributes, build_speechlet_response(
          card_title, speech_output, None, should_end_session))
@@ -146,8 +167,14 @@ def handle_news_intent(session, intent):
     else:
         site = string.replace(intent['slots']['Site']['value'], ' ', '-')
         speech_output, session_attributes = get_news(site)
-    should_end_session = False
+    if session_attributes['entities'] != []:
+        i = 1
+        speech_output += ". Want to talk about "
+        for entity in session_attributes['entities']:
+            speech_output += str(i) + " for " + entity + ","
+            i += 1
     card_title = "News Card"
+    should_end_session = False
     return build_response(session_attributes, build_speechlet_response(
          card_title, speech_output, None, should_end_session))
 
@@ -183,6 +210,44 @@ def handle_another_article_site_intent(session):
          card_title, speech_output, None, should_end_session))
 
 
+# Allows the user to select a keyword in the title. Not very natural or useful but it works so far
+def handle_entity_select_intent(session, intent):
+    session_attributes = session['attributes']
+    indices = {'1': 0, '2': 1, '3': 2, '4': 3, '5': 4}
+
+    if 'title' in session['attributes']:
+        try:
+            index = indices[intent['slots']['Index']['value']]
+            if 'entities' in session['attributes']:
+                if index < len(session['attributes']['entities']):
+                    session_attributes['entity'] = session['attributes']['entities'][index]
+                    speech_output = "You have selected " + session_attributes['entity']
+                else:
+                    speech_output = "Please select a valid number"
+            else:
+                speech_output = "There are no entities"
+        except:
+            speech_output = "Please select a valid number"
+    else:
+        speech_output = "Tell you about what? Try asking for a news article first."
+
+    card_title = "Entity select"
+    reprompt_speech = None
+
+    should_end_session = False
+    return build_response(session_attributes, build_speechlet_response(
+         card_title, speech_output, reprompt_speech, should_end_session))
+
+
+def handle_help_intent(session):
+    session_attributes = session['attributes']
+    card_title = "Help Card"
+    speech_output = "Ask for news from a website or maybe just ask how I am feeling"
+    should_end_session = False
+    return build_response(session_attributes, build_speechlet_response(
+         card_title, speech_output, None, should_end_session))
+
+
 # This handles when the program in the state wrong for the specified intent
 def handle_incorrect_state(session):
     return True
@@ -204,7 +269,48 @@ def get_news(site):
         rand = random.randrange(0, len(data['articles']))
         response = 'I do not know the website but here is a random buzzfeed article, ' + data['articles'][rand]['title']
 
+    entities = get_entities(data['articles'][rand]['title'])
+    formEntities = []
+    for item in entities:
+        formEntities.append(format(item))
+
     session_attributes = {'title': data['articles'][rand]['title'],
                           'more': data['articles'][rand]['description'],
-                          'site': site}
+                          'site': site,
+                          'entities': formEntities}
     return response, session_attributes
+
+
+# Sends string to the entities API to get a list of entities that can be stored in the session attributes
+# Currently unused by for anything useful
+def get_entities(text):
+    entities = []
+    url = string.replace(text, ' ', '%20')
+    json_obj = urllib2.urlopen('https://api.dandelion.eu/datatxt/nex/v1/?lang=en%20&text=' + url + '%20&include=&token=86e9619bb04c4c62b5bc9c770767bddf')
+    data = json.load(json_obj)
+    for item in data['annotations']:
+        entities.append(item['title'])
+    return entities
+
+# gets the sentiment for the given title and description
+def get_sentiment(title,description):
+
+    s = title+" "+description
+
+    url = "http://text-processing.com/api/sentiment/"
+    r = urllib2.Request(url, data="text="+s)
+    f = urllib2.urlopen(r)
+    data = json.load(f)
+    result = data[u'label']
+    print(result)
+    return result
+
+
+def format(text):
+    result = ""
+    for char in text:
+        if char != '(' and char != '!':
+            result += char
+        else:
+            break;
+    return result
