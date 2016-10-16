@@ -1,65 +1,64 @@
-WEBSITE_LIST:
-ars-technica
-associated-press
-bbc-news
-bbc-sport
+ars technica
+associated press
+bbc news
+bbc sport
 bild
 bloomberg
-business-insider
-business-insider-uk
+business insider
+business insider uk
 buzzfeed
 cnbc
 cnn
-daily-mail
+daily mail
 engadget
-entertainment-weekly
+entertainment weekly
 espn
-espn-cric-info
-financial-times
+espn cric info
+financial times
 focus
-football-italia
+football italia
 fortune
-four-four-two
-fox-sports
-google-news
+four four two
+fox sports
+google news
 gruenderszene
-hacker-news
+hacker news
 ign
 independent
 mashable
 metro
 mirror
-mtv-news
-mtv-news-uk
-national-geographic
-new-scientist
+mtv news
+mtv news uk
+national geographic
+new scientist
 newsweek
-new-york-magazine
-nfl-news
+new york magazine
+nfl news
 polygon
 recode
-reddit-r-all
+reddit r all
 reuters
-sky-news
-sky-sports-news
-spiegel-online
+sky news
+sky sports news
+spiegel online
 t3n
 talksport
 techcrunch
 techradar
-the-economist
-the-guardian-uk
-the-hindu
-the-huffington-post
-the-lad-bible
-the-new-york-time
-the-next-web
-the-sport-bible
-the-telegraph
-the-times-of-india
-the-verge
-the-wall-street-journal
-the-washington-post
+the economist
+the guardian uk
+the hindu
+the huffington post
+the lad bible
+the new york time
+the next web
+the sport bible
+the telegraph
+the times of india
+the verge
+the wall street journal
+the washington post
 time
-usa-today
-wired-de
+usa today
+wired de
