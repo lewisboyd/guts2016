@@ -396,7 +396,7 @@ def get_rand_news():
     json_obj = urllib2.urlopen("https://newsapi.org/v1/articles?source="+source+"&apiKey=ef3e0724395d48ae8fef22341dc76428")
     articles = json.load(json_obj)
     rand = random.randrange(0,len(articles['articles']))
-    entities = get_entities(data['articles'][rand]['title'])
+    entities = get_entities(articles['articles'][rand]['title'])
     formEntities = []
     for item in entities:
         formEntities.append(format(item))
