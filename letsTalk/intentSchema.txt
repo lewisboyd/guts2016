@@ -1,0 +1,25 @@
+{
+  "intents": [
+    {
+      "intent": "HowAreYouIntent"
+    },
+    {
+      "intent": "NewsIntent",
+      "slots": [
+        {
+          "name": "Site",
+          "type": "WEBSITE_LIST"
+        }
+      ]
+    },
+    {
+      "intent": "TellMeMoreIntent"
+    },
+    {
+      "intent": "AnoArtSiteIntent"
+    },
+    {
+      "intent": "AMAZON.HelpIntent"
+    }
+  ]
+}
