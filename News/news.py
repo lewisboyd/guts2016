@@ -142,7 +142,7 @@ def handle_how_are_you_intent(session):
 def handle_news_intent(session, intent):
     site = string.replace(intent['slots']['Site']['value'], ' ', '-')
     card_title = "News Card"
-    speech_output, session_attributes = get_news(site)
+    speech_output, session_attributes = get_news(site, session)
     should_end_session = False
     return build_response(session_attributes, build_speechlet_response(
          card_title, speech_output, None, should_end_session))
@@ -178,8 +178,10 @@ def handle_incorrect_state(session):
 
 # Interacts with News API to get a random article of the specified website
 # If the specified website does cannot be accessed, then a random Buzzfeed article is found
-def get_news(site):
+def get_news(site, session):
     card_title = "News"
+    if 'entities' in session['attributes']:
+        session['attributes'].pop('entities', None)
     try:
         json_obj = urllib2.urlopen('https://newsapi.org/v1/articles?source=' + site + '&apiKey=ef3e0724395d48ae8fef22341dc76428')
         data = json.load(json_obj);
@@ -191,9 +193,11 @@ def get_news(site):
         data = json.load(json_obj);
         rand = random.randrange(0, len(data['articles']))
         response = 'I do not know the website but here is a random buzzfeed article, ' + data['articles'][rand]['title']
-
+    
+    entities = get_entities(data['articles'][rand]['title'])
     session_attributes = {'title': data['articles'][rand]['title'],
                           'description': data['articles'][rand]['description'],
+                          'entities': entities,
                           'more': data['articles'][rand]['description']}
     return response, session_attributes
 
