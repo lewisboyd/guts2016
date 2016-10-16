@@ -1,5 +1,5 @@
 from __future__ import print_function
-import urllib2, json, random, string
+import urllib, urllib2, json, random, string
 
 __author__ = 'Team 9'
 
@@ -85,6 +85,9 @@ def on_intent(intent_request, session):
         
     if intent_name == "EntitySelect":
         return handle_entity_select_intent(session, intent)
+        
+    if intent_name == "EntitySearch":
+        return handle_entity_search_intent(session)
 
     if intent_name == "NewsIntent":
         return handle_news_intent(session, intent)
@@ -162,6 +165,17 @@ def handle_entity_select_intent(session, intent):
     return build_response(session_attributes, build_speechlet_response(
          card_title, speech_output, reprompt_speech, should_end_session))
 
+def handle_entity_search_intent(session):
+    card_title = "Search"
+    if 'entity' in session['attributes']:
+        data = bing_search(session['attributes']['entity'])
+        speech_output = data[0]['Description']
+    else:
+        speech_output = "Please ask for an article and select an entity first"
+    should_end_session = False
+    session_attributes = session['attributes']
+    return build_response(session_attributes, build_speechlet_response(
+         card_title, speech_output, None, should_end_session))
 
 def handle_news_intent(session, intent):
     site = string.replace(intent['slots']['Site']['value'], ' ', '-')
@@ -249,3 +263,23 @@ def format(text):
         else:
             break;
     return result
+    
+def bing_search(query):
+    #search_type: Web, Image, News, Video
+    key= 'zZIMlWEMF95BxiauHkmg4Q6y/80Y9csYC3YQltKre18'
+    query = query.replace(" ", "+")
+    query = urllib.quote(query)
+    # create credential for authentication
+    user_agent = 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Trident/4.0; FDM; .NET CLR 2.0.50727; InfoPath.2; .NET CLR 1.1.4322)'
+    credentials = (':%s' % key).encode('base64')[:-1]
+    auth = 'Basic %s' % credentials
+    url = 'https://api.datamarket.azure.com/Data.ashx/Bing/Search/Web?Query=%27'+query+'%27&$top=5&$format=json'
+    request = urllib2.Request(url)
+    request.add_header('Authorization', auth)
+    request.add_header('User-Agent', user_agent)
+    request_opener = urllib2.build_opener()
+    response = request_opener.open(request)
+    response_data = response.read()
+    json_result = json.loads(response_data)
+    result_list = json_result['d']['results']
+    return result_list
