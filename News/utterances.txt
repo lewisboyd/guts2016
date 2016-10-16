@@ -1,3 +1,4 @@
-HowAreYou how are you
-News tell me the news from {Site}
-TellMeMore tell me more
+HowAreYouIntent how are you
+NewsIntent tell me the news from {Site}
+TellMeMoreIntent tell me more
+AnoArtSiteIntent can i have another article from this website
