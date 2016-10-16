@@ -153,7 +153,6 @@ def handle_tell_me_more_intent(session):
 
     if 'more' in session['attributes']:
         speech_output = session['attributes']['more']
-        #del (session['attributes'])['more']
     else:
         speech_output = "Tell you about what? Try asking for a news article first."
     card_title = "Tell Me More Card"
@@ -165,8 +164,12 @@ def handle_tell_me_more_intent(session):
 def handle_another_article_site_intent(session):
     session_attributes = {}
     card_title = "Another Article Site Card"
-    speech_output = "this is another article from the same site"
+    oldTitle = session['attributes']['title']
+    title, session_attributes = get_news(session['attributes']['site'])
+    while title == oldTitle:
+        title, session_attributes = get_news(session['attributes']['site'])
     should_end_session = False
+    speech_output = title
     return build_response(session_attributes, build_speechlet_response(
          card_title, speech_output, None, should_end_session))
 
@@ -193,6 +196,6 @@ def get_news(site):
         response = 'I do not know the website but here is a random buzzfeed article, ' + data['articles'][rand]['title']
 
     session_attributes = {'title': data['articles'][rand]['title'],
-                          'description': data['articles'][rand]['description'],
-                          'more': data['articles'][rand]['description']}
+                          'more': data['articles'][rand]['description'],
+                          'site': site}
     return response, session_attributes
