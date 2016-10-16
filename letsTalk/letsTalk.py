@@ -162,14 +162,19 @@ def handle_tell_me_more_intent(session):
 
 
 def handle_another_article_site_intent(session):
-    session_attributes = {}
-    card_title = "Another Article Site Card"
-    oldTitle = session['attributes']['title']
-    title, session_attributes = get_news(session['attributes']['site'])
-    while title == oldTitle:
+    session_attributes = session['attributes']
+
+    if 'more' in session['attributes']:
+        oldTitle = session['attributes']['title']
         title, session_attributes = get_news(session['attributes']['site'])
+        while title == oldTitle:
+            title, session_attributes = get_news(session['attributes']['site'])
+        speech_output = title
+    else:
+        speech_output = "Get another article from where? Try asking for a news article first."
+
+    card_title = "Another Article Site Card"
     should_end_session = False
-    speech_output = title
     return build_response(session_attributes, build_speechlet_response(
          card_title, speech_output, None, should_end_session))
 
