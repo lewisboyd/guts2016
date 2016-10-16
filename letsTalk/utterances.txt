@@ -98,7 +98,7 @@ EntitySearch what you say about this
 GoodNewsIntent can I have some good news
 GoodNewsIntent I want some good news
 GoodNewsIntent can I have some happy news
-GoodNewsIntent can I have some new that isn't sad news
+GoodNewsIntent can I have some news that isnt sad news
 GoodNewsIntent good news please
 GoodNewsIntent get some good news
 GoodNewsIntent what is some good news
