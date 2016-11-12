@@ -394,14 +394,17 @@ def get_rand_news():
     source = data['sources'][rand]['name'].lower().replace(' ','-').replace('(','').replace(')','')
     print(source)
     json_obj = urllib2.urlopen("https://newsapi.org/v1/articles?source="+source+"&apiKey=ef3e0724395d48ae8fef22341dc76428")
-    articles = json.load(json_obj)
-    rand = random.randrange(0,len(articles['articles']))
-    entities = get_entities(articles['articles'][rand]['title'])
+    jsonFileWithArticlesFromRandomSource = json.load(json_obj)
+    randomSourceArticles = jsonFileWithArticlesFromRandomSource['articles']
+
+    rand = random.randrange(0,len(randomSourceArticles))
+    randomArticle = randomSourceArticles[rand]
+    entities = get_entities(randomArticle['title'])
     formEntities = []
     for item in entities:
         formEntities.append(format(item))
-    response = "Here is some good news :) "+ articles['articles'][rand]['title']
-    session_attributes = {'title': articles['articles'][rand]['title'],
-                            'more': articles['articles'][rand]['description'],
+    response = "Here is some good news :) "+ randomArticle['title']
+    session_attributes = {'title': randomArticle['title'],
+                            'more': randomArticle['description'],
                             'entities': formEntities}
     return response, session_attributes
