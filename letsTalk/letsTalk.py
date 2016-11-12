@@ -388,7 +388,7 @@ def bing_search(query):
 def get_rand_news():
     card_title = "Rand News"
 
-    json_obj = urllib2.urlopen('https://newsapi.org/v1/sources?sortBy=popular&apiKey=ef3e0724395d48ae8fef22341dc76428')
+    json_obj = urllib2.urlopen('https://newsapi.org/v1/sources?language=en&apiKey=ef3e0724395d48ae8fef22341dc76428')
     data = json.load(json_obj)
     rand = random.randrange(0,len(data['sources']))
     source = data['sources'][rand]['name'].lower().replace(' ','-').replace('(','').replace(')','')
