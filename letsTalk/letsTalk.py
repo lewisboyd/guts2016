@@ -7,6 +7,16 @@ from pprint import pprint
 
 __author__ = 'Team 9'
 
+sources_index = []
+
+def initialise_sources_index():
+
+    json_obj = urllib2.urlopen('https://newsapi.org/v1/sources?language=en&apiKey=ef3e0724395d48ae8fef22341dc76428')
+    data = json.load(json_obj)
+
+    sources = data['sources']
+    for i in range(0, len(sources)-1):
+        sources_index.append(sources[i]['name'].lower().replace(' ', '-').replace('(', '').replace(')', ''))
 
 # Builders for the responses that Alexa says
 def build_speechlet_response(title, output, reprompt_text, should_end_session):
@@ -57,6 +67,7 @@ def get_welcome_response():
 
 
 def on_session_started(session_started_request, session):
+    initialise_sources_index();
     print("on_session_started requestId=" + session_started_request['requestId']
           + ", sessionId=" + session['sessionId'])
 
@@ -387,23 +398,24 @@ def bing_search(query):
 # Gets a random news article instead of specifying the website
 def get_rand_news():
     card_title = "Rand News"
-
-    json_obj = urllib2.urlopen('https://newsapi.org/v1/sources?language=en&apiKey=ef3e0724395d48ae8fef22341dc76428')
-    data = json.load(json_obj)
-    rand = random.randrange(0,len(data['sources']))
-    source = data['sources'][rand]['name'].lower().replace(' ','-').replace('(','').replace(')','')
-    print(source)
-    json_obj = urllib2.urlopen("https://newsapi.org/v1/articles?source="+source+"&apiKey=ef3e0724395d48ae8fef22341dc76428")
+    rand = random.randrange(0,len(sources_index))
+    json_obj = urllib2.urlopen("https://newsapi.org/v1/articles?source="+sources_index[rand]+"&apiKey=ef3e0724395d48ae8fef22341dc76428")
     jsonFileWithArticlesFromRandomSource = json.load(json_obj)
     randomSourceArticles = jsonFileWithArticlesFromRandomSource['articles']
 
     rand = random.randrange(0,len(randomSourceArticles))
     randomArticle = randomSourceArticles[rand]
-    entities = get_entities(randomArticle['title'])
+
+    entities = []
+    randomArticleTitle = randomArticle['title']
+    if(randomArticleTitle!=None):
+        entities = get_entities(randomArticle['title'])
+
     formEntities = []
     for item in entities:
         formEntities.append(format(item))
-    response = "Here is some good news :) "+ randomArticle['title']
+
+    response = "Here is some good news: "+ randomArticle['title']
     session_attributes = {'title': randomArticle['title'],
                             'more': randomArticle['description'],
                             'entities': formEntities}
